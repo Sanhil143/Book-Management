@@ -60,7 +60,7 @@ const createUser = async function (req, res) {
     }
 
     let savedData = await UserModel.create(userData)
-    return res.status(400).send({ status: true, message: "Success", data: savedData })
+    return res.status(201).send({ status: true, message: "Success", data: savedData })
   }
   catch (err) {
    return  res.status(500).send({status:false, message:err.message})
@@ -103,7 +103,7 @@ const loginUser = async function (req, res) {
     let ExpiresIn = decodedToken.exp
 
     res.setHeader("x-api-key", token);
-    res.status(400).send({ status: true, message: "login successful", data: token, UserID, IAT, ExpiresIn });
+    res.status(200).send({ status: true, message: "login successful", data: token, UserID, IAT, ExpiresIn });
   } catch (error) {
     res.status(500).send({ status: false, message: error.message });
   }
