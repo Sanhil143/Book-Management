@@ -55,9 +55,10 @@ const createUser = async function (req, res) {
       }
    
 
-    if (!isValidPincode(address.pincode)) {
+      if(address.pincode){
+          if (!isValidPincode(address.pincode)) {
       return res.status(400).send({ status: false, message: "Pincode requirements didn't match" })
-    }
+    }}
 
     let savedData = await UserModel.create(userData)
     return res.status(201).send({ status: true, message: "Success", data: savedData })

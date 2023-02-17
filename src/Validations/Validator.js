@@ -79,9 +79,10 @@ const isValidReleasedAt = (releasedAt) => {
   return /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/.test(releasedAt);
 };
 
+const isValidFile = (value) =>  /\.(jpe?g|png)$/i.test(value)
 //_________ Export : Modules  ________________
 
 module.exports = {
   isValid, isValidISBN, isValidString, isValidMobileNo,
-  isValidEmail, isValidName, isValidObjectId, isValidReleasedAt, isValidPassword, isValidPincode,isValidString2
+  isValidEmail, isValidName, isValidObjectId, isValidReleasedAt, isValidPassword, isValidPincode,isValidString2,isValidFile
 };

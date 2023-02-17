@@ -1,5 +1,4 @@
-const express = require('express')
-const router = express.Router()
+const router = require('express')()
 const {authentication} = require("../middlewares/commonMiddle")
 const {loginUser,createUser} = require("../controllers/userController")
 const {createBooks, getBook, updateBook, deleteBook,getBookById} = require("../controllers/bookController")

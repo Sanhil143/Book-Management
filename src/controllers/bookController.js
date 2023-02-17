@@ -1,7 +1,7 @@
-
 const BookModel = require("../models/bookModel")
 const reviewModel = require("../models/reviewModel")
-const { isValidString2, isValidISBN, isValidObjectId, isValidReleasedAt, isValidString } = require("../Validations/Validator");
+const { uploadFile } = require('../aws/awsConn')
+const { isValidString2, isValidFile, isValidISBN, isValidObjectId, isValidReleasedAt, isValidString } = require("../Validations/Validator");
 
 
 // create book
@@ -9,10 +9,18 @@ const { isValidString2, isValidISBN, isValidObjectId, isValidReleasedAt, isValid
 const createBooks = async function (req, res) {
     try {
         let data = req.body
+        
+        let files = req.files
+        
+
         const { title, excerpt, userId, ISBN, category, subcategory, releasedAt } = data
 
         if (data.length == 0) {
             return res.status(400).send({ status: false, message: "please give some data to create a book" })
+        }
+        //Authorization
+        if (req.loginUserId !== userId) {
+            res.status(403).send({ status: false, message: "you are not Authorized" })
         }
 
         //title
@@ -41,7 +49,7 @@ const createBooks = async function (req, res) {
         if (!isValidObjectId(userId)) {
             return res.status(400).send({ status: false, message: "Enter Valid user Id" })
         }
-
+ 
         //ISBN
         if (!ISBN) {
             return res.status(400).send({ status: false, message: "ISBN is mandatory" })
@@ -79,10 +87,23 @@ const createBooks = async function (req, res) {
             return res.status(400).send({ status: false, message: "invalid date" })
         }
 
-        //Authorization
-        if (req.loginUserId !== userId) {
-            res.status(403).send({ status: false, message: "Not Authorized" })
+        if(!files){
+            return res.status(400).send({status:false, message:"please provide image"})
         }
+        if (files.length > 0) {
+
+            if (files.length > 1) {
+                return res.status(400).send({ status: false, message: 'please select only one files' })
+            }
+            if (!isValidFile(files[0].originalname)) {
+                return res.status(400).send({ status: false, message: 'please select valid  image like jpeg , png ,jpg' })
+            }
+            
+            let uploadedFileURL = await uploadFile(files[0]);
+            console.log(uploadedFileURL)
+            data.bookCover = uploadedFileURL;       
+        }
+        
 
 
 
@@ -203,7 +224,7 @@ const updateBook = async (req, res) => {
             return res.status(400).send({ status: false, message: "Please enter valid  id" })
         }
         //destructuring body
-        const { title, excerpt, releasedAt, ISBN } = body
+        const { title, excerpt, releasedAt, ISBN, bookCover } = body
 
         //checking book presence
         let checkBook = await BookModel.findOne({ _id: bookId })
@@ -256,6 +277,19 @@ const updateBook = async (req, res) => {
         if (checkIsbn) {
             return res.status(400).send({ status: false, message: "ISBN is already exist" })
         }
+        // BookImage
+        if(bookCover){
+            if (files.length > 1) {
+                return res.status(400).send({ status: false, message: 'please select only one files' })
+            }
+            if (!isValidFile(files[0].originalname)) {
+                return res.status(400).send({ status: false, message: 'please select valid  image like jpeg , png ,jpg' })
+            }
+            
+            let uploadedFileURL = await uploadFile(files[0]);
+            console.log(uploadedFileURL)
+            body.bookCover = uploadedFileURL;
+        }
         //storing value on obj
         let updatedKey = {}
 
@@ -270,6 +304,9 @@ const updateBook = async (req, res) => {
         }
         if (ISBN) {
             updatedKey.ISBN = ISBN
+        }
+        if(bookCover){
+            updatedKey.bookCover = bookCover
         }
 
 
