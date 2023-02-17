@@ -24,7 +24,3 @@ app.listen(3000, () => {
 
 //create review = delete something
 // update review handle edge cases
-// "engines": {
-//       "npm": ">=8.0.0 <9.0.0",
-//       "node": ">=16.0.0 <17.0.0"
-//     },
