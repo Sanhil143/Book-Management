@@ -2,11 +2,13 @@ const express = require('express')
 const mongoose = require('mongoose')
 const multer = require('multer')
 const router = require("./routers/router")
+const cors = require('cors')
 
 
 
 mongoose.set('strictQuery', true)
 const app = express()
+app.use(cors())
 app.use(express.json())
 app.use(multer().any())
 
@@ -24,3 +26,7 @@ app.listen(3000, () => {
 
 //create review = delete something
 // update review handle edge cases
+// "engines": {
+//       "npm": ">=8.0.0 <9.0.0",
+//       "node": ">=16.0.0 <17.0.0"
+//     },

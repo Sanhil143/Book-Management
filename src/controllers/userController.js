@@ -4,6 +4,7 @@ const { isValid, isValidTitle, isValidMobileNo, isValidPassword, isValidPincode,
   isValidEmail, isValidName } = require("../Validations/Validator");
 
 const createUser = async function (req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*")
   try {
     let userData = req.body
 
